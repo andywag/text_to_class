@@ -16,6 +16,11 @@ class GenericEnum(Enum):
     def __str__(self):
         return self.values[1]
 
+    def to_label_text(self, row, label, index):
+        label[row, index] = int(self)
+        return [str(self)]
+
+
     @classmethod
     def random_samples(cls, number):
         data = list(cls)
@@ -34,6 +39,7 @@ class GenericEnum(Enum):
             prob = [probs[0][index][row,x] for x in indices]
             return FuzzyResult(use_data, prob)
 
+
 class BinaryList:
     def __init__(self, values):
         self.values = values
@@ -43,6 +49,10 @@ class BinaryList:
         indices = np.random.randint(0, 2, size=(number, len(cls.items())), dtype=np.int64)
         options = [cls(indices[x, :].flatten()) for x in range(number)]
         return options
+
+    def to_label_text(self, row, label, index):
+        label[row, index] = int(self)
+        return [str(self)]
 
 
 # Binary Classifier Based on a set of Tags
@@ -82,6 +92,10 @@ class FuzzyResult:
 
     def __repr__(self):
         return f"{self.result}({'{:.2f}'.format(self.probability)})"
+
+
+
+
 
 def create_eval_data(data):
     tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
