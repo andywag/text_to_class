@@ -6,7 +6,7 @@ import numpy as np
 from scipy.special import softmax
 
 class ClassifierTrainer:
-    def __init__(self, classifier_description, ckpt=None, training_args=None):
+    def __init__(self, classifier_description, ckpt=None, training_args=None, tr_batch_size = 160):
         self.classifier_description = classifier_description
         if ckpt is None:
             ckpt = "bert-base-uncased"

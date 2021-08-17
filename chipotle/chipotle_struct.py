@@ -2,6 +2,7 @@
 from general_struct import GenericEnum
 from general_factory import SingleChoice, MultiChoice, BinaryList, Combination
 
+
 class MealType(GenericEnum):
     BURRITO = 0, "Burrito"
     SOFT_TACOS = 1, "Soft Tacos"
@@ -44,6 +45,7 @@ class DrinkType(GenericEnum):
     BERRY_FRESCA = 4, 'berry agua fresca'
     MEX_COKE = 5, 'mexican coke'
     MEX_SPRITE = 6, 'mexican sprite'
+
 
 
 class Options(BinaryList):

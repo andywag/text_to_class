@@ -1,6 +1,7 @@
 import json
-from general_factory import MultiChoice
-
+from general_factory import MultiChoice, SingleChoice, Combination
+from general_struct import GenericEnum
+import aenum
 
 def parse_file(file = 'mcs.json'):
     with open('mcd.json', 'r') as fp:
@@ -17,23 +18,37 @@ def parse_file(file = 'mcs.json'):
         return out_data
 
 
-
-
 def create_classes(out_data):
-    for key, value in out_data:
-        # creating class dynamically
-        Geeks = type("Geeks", (object,), {
-        # constructor
-            "__init__": constructor,
+    def constructor(self, item):
+        self.item = item
 
-            # data members
-            "string_attribute": "Geeks 4 geeks !",
-            "int_attribute": 1706256,
+    def create_class(key, value, index):
+        enum = type(key+"Enum", (GenericEnum,), {})
+        for i, v in enumerate(value):
+            aenum.extend_enum(enum, v, (i, v))
 
-            # member functions
-            "func_arg": displayMethod,
-            "class_func": classMethod
+        gen = type(key, (SingleChoice,), {
+            "__init__": constructor
         })
+        gen.location = index
+        gen.max_classes = 2
+        gen.generator = enum
+        return gen
 
-out_data = parse_file()
-pass
+
+    generated_classes = []
+    for i, (key, value) in enumerate(out_data.items()):
+        generate_class = create_class(key, value, i)
+        generated_classes.append(generate_class)
+
+    top = type('McTop',(MultiChoice,), {
+        "__init__": constructor
+    })
+    top.classes = generated_classes
+    return top
+
+
+def create_order():
+    out_data = parse_file()
+    top = create_classes(out_data)
+    return top

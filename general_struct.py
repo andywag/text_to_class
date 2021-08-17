@@ -6,15 +6,16 @@ from classifier_dataset import GeneralDataset
 from transformers import BertConfig, BertTokenizer, BertTokenizerFast
 
 
+
 class GenericEnum(Enum):
-    _init_ = 'value fullname'
-    _settings_ = MultiValue
+    #_init_ = 'value fullname'
+    #_settings_ = MultiValue
 
     def __int__(self):
-        return self.value
+        return self.value[0]
 
     def __str__(self):
-        return self.values[1]
+        return self.value[1]
 
     def to_label_text(self, row, label, index):
         label[row, index] = int(self)
@@ -34,7 +35,7 @@ class GenericEnum(Enum):
         if probs[0][index][row, location] > .8:
             return FuzzyResult(data[location], probs[0][index][row, location])
         else:
-            indices = np.argsort(-probs[0][index][row,:])[:3]
+            indices = np.argsort(-probs[0][index][row,:len(data)])[:3]
             use_data = [data[x] for x in indices]
             prob = [probs[0][index][row,x] for x in indices]
             return FuzzyResult(use_data, prob)
@@ -82,7 +83,8 @@ class GeneralClassifierStruct(ClassifierDescription):
         self.specs = list()
         for m in multi:
             self.specs.append(ClassifierMultiStruct(m))
-        self.specs.append(ClassifierBinaryStruct(self.binary))
+        if binary > 0:
+            self.specs.append(ClassifierBinaryStruct(self.binary))
 
 
 class FuzzyResult:
@@ -91,7 +93,11 @@ class FuzzyResult:
         self.probability = probability
 
     def __repr__(self):
-        return f"{self.result}({'{:.2f}'.format(self.probability)})"
+        r = self.result
+        p = self.probability
+        if isinstance(self.result, list):
+            r = self.result[0]; p = self.probability[0]
+        return f"{r}({'{:.2f}'.format(p)})"
 
 
 

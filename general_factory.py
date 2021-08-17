@@ -7,6 +7,9 @@ class SingleChoice:
     def __init__(self, item: GenericEnum):
         self.item = item
 
+    def __repr__(self):
+        return str(self.item)
+
     def to_label_text(self, row, label, index):
         label[row, index] = type(self).location
         label[row, index+1] = int(self.item)
@@ -89,6 +92,13 @@ class BinaryList:
 class Combination:
     def __init__(self):
         pass
+
+    def __repr__(self):
+        cls = type(self)
+        text = ""
+        for i, x in enumerate(self.values):
+            text += str(x) + ","
+        return text
 
     @classmethod
     def from_probs(cls, probs, index, row):
