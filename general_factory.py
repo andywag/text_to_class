@@ -1,9 +1,18 @@
 from general_struct import GenericEnum
 import random
 import numpy as np
+from general_struct import FuzzyResult
+
+class BaseObject:
+
+    def missing_values(self):
+        return []
+
+    def update_value(self, value_index, index):
+        pass
 
 
-class SingleChoice:
+class SingleChoice(BaseObject):
     def __init__(self, item: GenericEnum):
         self.item = item
 
@@ -27,7 +36,7 @@ class SingleChoice:
         return [cls(x) for x in side_type]
 
 
-class MultiChoice:
+class MultiChoice(BaseObject):
     def __init__(self, item):
         self.item = item
 
@@ -57,7 +66,7 @@ class MultiChoice:
         return data
 
 
-class BinaryList:
+class BinaryList(BaseObject):
     def __init__(self, values):
         self.values = values
 
@@ -89,7 +98,7 @@ class BinaryList:
         return ",".join(result)
 
 
-class Combination:
+class Combination(BaseObject):
     def __init__(self):
         pass
 
@@ -99,6 +108,23 @@ class Combination:
         for i, x in enumerate(self.values):
             text += str(x) + ","
         return text
+
+    def update_value(self, value_index, index):
+        item = list(type(self).classes[value_index])[index]
+        self.values[value_index] = FuzzyResult(item, 1.0)
+        print(self.values, self)
+        cls = type(self)
+        return cls(*self.values)
+
+    def missing_values(self):
+        missing = []
+        for i, v in enumerate(self.values):
+            if isinstance(v, FuzzyResult):
+                if isinstance(v.probability, list):
+                    missing.append((i, type(self).classes[i]))
+                elif v.probability < .9:
+                    missing.append((i, type(self).classes[i]))
+        return missing
 
     @classmethod
     def from_probs(cls, probs, index, row):
