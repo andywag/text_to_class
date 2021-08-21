@@ -103,17 +103,15 @@ class FuzzyResult:
 
 
 
-def create_eval_data(data):
-    tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
+def create_eval_data(data, tokenizer):
     tokenized_data = tokenizer.batch_encode_plus(data, truncation=True, padding='max_length', max_length=40)
     input_data = GeneralDataset(tokenized_data, None, data)
     return input_data
 
-def create_random_data(cls, sim_length, label_length):
+def create_random_data(cls, sim_length, label_length, tokenizer):
     data = cls.random_samples(sim_length)
     labels = np.zeros((sim_length, label_length), dtype=np.int64)
     sdata = [x.to_label_text(i, labels, 0) for i, x in enumerate(data)]
-    tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
     tokenized_data = tokenizer.batch_encode_plus(sdata, truncation=True, padding='max_length', max_length=40)
     input_data = GeneralDataset(tokenized_data, labels, sdata)
     return input_data

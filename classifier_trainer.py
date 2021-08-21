@@ -1,32 +1,55 @@
 
-from model import BertForMultiSequenceClassification
+from model import BertForMultiSequenceClassification, AlbertForMultiSequenceClassification, DistilBertForMultiSequenceClassification
 from transformers import Trainer, TrainingArguments
-from transformers import BertConfig, BertTokenizer
+from transformers import BertTokenizer, AlbertTokenizer, DistilBertTokenizerFast
 import numpy as np
 from scipy.special import softmax
 
-
+ALBERT = "albert"
+BERT = "bert"
+BERT4 = "bert4"
+DIS = "dis"
 
 class ClassifierTrainer:
-    def __init__(self, classifier_description, ckpt=None, training_args=None, tr_batch_size = 160):
+    def __init__(self, classifier_description, ckpt=None, training_args=None, tr_batch_size=160,
+                 model = BERT):
         self.classifier_description = classifier_description
-        if ckpt is None:
-            ckpt = "bert-base-uncased"
-        self.model = BertForMultiSequenceClassification.from_pretrained(ckpt,
-                                                           labels=classifier_description)
 
-        self.tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
+        if model == BERT or model == BERT4:
+            if model == BERT4:
+                ck = "google/bert_uncased_L-4_H-512_A-8"
+            else:
+                ck = "bert-base-uncased"
+
+            if ckpt is None:
+                ckpt = ck
+
+            self.model = BertForMultiSequenceClassification.from_pretrained(ckpt,
+                                                           labels=classifier_description)
+            self.tokenizer = BertTokenizer.from_pretrained(ck)
+        elif model == ALBERT:
+            if ckpt is None:
+                ckpt = "albert-base-v2"
+            self.model = AlbertForMultiSequenceClassification.from_pretrained(ckpt,
+                                                           labels=classifier_description)
+            self.tokenizer = AlbertTokenizer.from_pretrained("albert-base-v2")
+        else:
+            if ckpt is None:
+                ckpt = "distilbert-base-uncased"
+            self.model = DistilBertForMultiSequenceClassification.from_pretrained(ckpt,
+                                                           labels=classifier_description)
+            self.tokenizer = DistilBertTokenizerFast.from_pretrained("albert-base-v2")
 
         if training_args is None:
-            self.training_args = TrainingArguments("test_trainer")
-            self.training_args.per_device_train_batch_size = 192-32
+            self.training_args = TrainingArguments(model)
+            self.training_args.per_device_train_batch_size = 192-32-32
             self.training_args.per_device_eval_batch_size = 256
 
             self.training_args.logging_steps = 20
             self.training_args.num_train_epochs = 1
             self.training_args.do_eval = True
             self.training_args.do_predict = True
-            self.training_args.save_steps = 50
+            self.training_args.save_steps = 500
 
     def train(self, input_data, eval_data):
         trainer = Trainer(model=self.model, args=self.training_args,

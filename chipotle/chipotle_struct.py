@@ -93,6 +93,9 @@ class Meal(Combination):
         self.options = options
         self.values = [self.meal, self.meat, self.rice, self.beans, self.options]
 
+    def __repr__(self):
+        return f"{self.meat} {self.meal} with {self.rice}, {self.beans}, {self.options}"
+
 
 Meal.classes = [MealType, MeatType, RiceType, BeanType, Options]
 

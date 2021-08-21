@@ -22,7 +22,7 @@ class GeneralDataset(torch.utils.data.Dataset):
 
     def __add__(self, other):
         self.input_data.data['input_ids'] += other.input_data.data['input_ids']
-        self.input_data.data['token_type_ids'] += other.input_data.data['token_type_ids']
+        #self.input_data.data['token_type_ids'] += other.input_data.data['token_type_ids']
         self.input_data.data['attention_mask'] += other.input_data.data['attention_mask']
 
         self.labels += other.labels
