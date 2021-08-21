@@ -10,6 +10,7 @@ import sys
 import transformers
 sys.path.append("../chipotle")
 sys.path.append("..")
+import os
 
 from chipotle_server import InferenceEngine
 
@@ -60,7 +61,10 @@ class ActionButtonResponse(Action):
 
 class ActionOrder(Action):
     def __init__(self):
-        self.engine = InferenceEngine("../chipotle/bert4/checkpoint-4000")
+        checkpoint_folder = None#os.environ.get("CHECKPOINT_LOCATION")
+        if checkpoint_folder is None:
+            checkpoint_folder = "../chipotle/"
+        self.engine = InferenceEngine(f"{checkpoint_folder}/bert4/checkpoint-4000")
 
     def name(self):
         return "action_order"
