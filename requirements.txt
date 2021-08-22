@@ -2,3 +2,6 @@ numpy
 scipy
 aenum
 rasa
+flask
+transformers
+torch

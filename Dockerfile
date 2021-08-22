@@ -13,7 +13,9 @@ RUN pip install -r requirements.txt
 # Get the latest version of code
 
 # copy the content of the local src directory to the working directory
-COPY ../ .
+COPY . .
 
 # command to run on container start
-CMD [ "python", "./server.py" ]
+WORKDIR /code/rasa_project
+
+CMD [ "rasa", "run", "actions" ]
