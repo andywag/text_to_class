@@ -14,8 +14,9 @@ RUN pip install -r requirements.txt
 
 # copy the content of the local src directory to the working directory
 COPY . .
-
 # command to run on container start
 WORKDIR /code/rasa_project
+
+EXPOSE 5055
 
 CMD [ "rasa", "run", "actions" ]
