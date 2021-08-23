@@ -11,7 +11,7 @@
 # https://rasa.com/docs/rasa/custom-actions
 
 action_endpoint:
-  url: "http://localhost:5055/webhook"
+  url: "http://rasa_action:5055/webhook"
 
 #action_endpoint:
 #  url: "http://20.80.168.77:5055/webhook"
