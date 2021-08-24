@@ -29,6 +29,6 @@ def infer():
     print(d)
     pass
 
-
+#TODO Add an argparser and command line option for running
 train()
 #infer()
