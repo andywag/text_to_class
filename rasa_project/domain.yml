@@ -45,3 +45,5 @@ session_config:
 actions:
   - action_order
   - action_button_response
+  - action_affirm
+  - action_deny

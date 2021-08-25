@@ -98,6 +98,22 @@ class BinaryList(BaseObject):
         return ",".join(result)
 
 
+class MissingItem:
+    def __init__(self, index, typ, parent):
+        self.index = index
+        self.typ = typ
+        self.parent = parent
+
+    def title(self):
+        return f"What {str(self.typ)} would you like?"
+
+    def options(self):
+        return list(self.typ)
+
+    def update(self, update_value):
+        self.parent.update_value(self.index, int(update_value))
+
+
 class Combination(BaseObject):
     def __init__(self):
         pass
@@ -110,7 +126,8 @@ class Combination(BaseObject):
         return text
 
     def update_value(self, value_index, index):
-        item = list(type(self).classes[value_index])[index]
+        classes = list(type(self).classes[value_index])
+        item = classes[index]
         self.values[value_index] = FuzzyResult(item, 1.0)
         print(self.values, self)
         cls = type(self)
@@ -120,10 +137,9 @@ class Combination(BaseObject):
         missing = []
         for i, v in enumerate(self.values):
             if isinstance(v, FuzzyResult):
-                if isinstance(v.probability, list):
-                    missing.append((i, type(self).classes[i]))
-                elif v.probability < .9:
-                    missing.append((i, type(self).classes[i]))
+                if isinstance(v.probability, list) or v.probability < .9:
+                    missing_item = MissingItem(i, type(self).classes[i], self)
+                    missing.append(missing_item)
         return missing
 
     @classmethod

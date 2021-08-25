@@ -13,35 +13,50 @@ sys.path.append("..")
 import os
 
 from chipotle_server import InferenceEngine
-
+from cart.cart_state import Cart, Order, Update, YesAction, NoAction
+from state_machine import TextResponse, ChoiceResponse
 
 class CommonState:
     def __init__(self):
         pass
 
 common = CommonState()
+cart = Cart()
 
 
-def handle_data(dispatcher, tracker):
-    response = common.response
-    missing = response.missing_values()
-    common.missing = missing
-    print("Missing", missing)
-
-    text_response = f"Ok, so you want a {str(response)}"
-    dispatcher.utter_message(text=text_response)
-
-    if len(missing) > 0:
-        text_response = f"What {missing[0][1]} would you like?"
-        def qu(x):
-            return '"' + x + '"'
-
+def state_to_response(response, dispatcher):
+    def qu(x):
+        return '"' + x + '"'
+    if response is None:
+        print("No Response from State Machine", cart.current_state)
+        dispatcher.utter_message(f"No Response from Internal State Machine {cart.current_state}")
+    elif isinstance(response, TextResponse):
+        dispatcher.utter_message(text=response.text)
+    elif isinstance(response, ChoiceResponse):
         buttons = [{"title": str(x),
                     "payload": "/button_response{" + qu("index") + ':' + qu(str(i)) + "}"} for i, x in
-                   enumerate(list(missing[0][1]))]
-        dispatcher.utter_message(text_response, buttons=buttons)
-    else:
-        dispatcher.utter_message(text="Is that correct?")
+                   enumerate(response.choices)]
+        dispatcher.utter_message(text=response.text, buttons=buttons)
+
+
+class ActionAffirm(Action):
+    def name(self):
+        return "action_affirm"
+
+    def run(self, dispatcher: CollectingDispatcher, tracker, domain):
+        result = cart.action(YesAction())
+        [state_to_response(x, dispatcher) for x in result]
+        return []
+
+
+class ActionDeny(Action):
+    def name(self):
+        return "action_deny"
+
+    def run(self, dispatcher: CollectingDispatcher, tracker, domain):
+        result = cart.action(NoAction())
+        [state_to_response(x, dispatcher) for x in result]
+        return []
 
 
 class ActionButtonResponse(Action):
@@ -49,15 +64,11 @@ class ActionButtonResponse(Action):
         return "action_button_response"
 
     def run(self, dispatcher: CollectingDispatcher, tracker, domain):
-        print("Handle Button Response", type(common.response), common.response)
-        print("Missing", common.missing)
         index = tracker.latest_message['entities'][0]['value']
-        print("Latest", tracker.latest_message)
-        print("Index", index)
-        print("Value Index", common.missing[0][0])
-        common.response = common.response.update_value(int(common.missing[0][0]), int(index))
-        print("Response", common.response)
-        handle_data(dispatcher, tracker)
+        result = cart.action(Update(index))
+        [state_to_response(x, dispatcher) for x in result]
+        return []
+
 
 class ActionOrder(Action):
     def __init__(self):
@@ -70,12 +81,13 @@ class ActionOrder(Action):
         return "action_order"
 
     def run(self, dispatcher: CollectingDispatcher, tracker, domain):
-        print("Here", tracker.latest_message['text'])
+
+        # Run ML on input data
         response = self.engine.eval([tracker.latest_message['text']])
-        common.response = response[0]
-        handle_data(dispatcher, tracker)
-
-
+        print(f"Found Object {response}")
+        # Append the Order to the Cart
+        result = cart.action(Order(response[0]))
+        [state_to_response(x, dispatcher) for x in result]
         return []
 
 

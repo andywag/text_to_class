@@ -12,6 +12,16 @@ rules:
   - intent: order
   - action: action_order
 
+- rule: Handle Affirm
+  steps:
+  - intent: affirm
+  - action: action_affirm
+
+- rule: Handle Deny
+  steps:
+  - intent: deny
+  - action: action_deny
+
 - rule: Say goodbye anytime the user says goodbye
   steps:
   - intent: goodbye
