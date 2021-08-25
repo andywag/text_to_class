@@ -22,12 +22,15 @@ rules:
   - intent: deny
   - action: action_deny
 
-- rule: Say goodbye anytime the user says goodbye
+- rule: Handle View
   steps:
-  - intent: goodbye
-  - action: utter_goodbye
+  - intent: view
+  - action: action_view
 
-- rule: Say 'I am a bot' anytime the user challenges
+- rule: Handle Clear
   steps:
-  - intent: bot_challenge
-  - action: utter_iamabot
+  - intent: clear
+  - action: action_clear
+
+
+

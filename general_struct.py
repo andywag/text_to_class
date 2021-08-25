@@ -6,10 +6,7 @@ from classifier_dataset import GeneralDataset
 from transformers import BertConfig, BertTokenizer, BertTokenizerFast
 
 
-
 class GenericEnum(Enum):
-    #_init_ = 'value fullname'
-    #_settings_ = MultiValue
 
     def __int__(self):
         return self.value[0]
@@ -99,6 +96,16 @@ class FuzzyResult:
             r = self.result[0]; p = self.probability[0]
         return f"{r}({'{:.2f}'.format(p)})"
 
+    def __str__(self):
+        if isinstance(self.result, list):
+            return str(self.result[0])
+        else:
+            return str(self.result)
+        #r = self.result
+        #p = self.probability
+        #if isinstance(self.result, list):
+        #    r = self.result[0]; p = self.probability[0]
+        #return f"{r}({'{:.2f}'.format(p)})"
 
 
 

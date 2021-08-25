@@ -7,6 +7,8 @@ intents:
   - goodbye
   - affirm
   - deny
+  - view
+  - clear
   - mood_great
   - mood_unhappy
   - bot_challenge
@@ -47,3 +49,5 @@ actions:
   - action_button_response
   - action_affirm
   - action_deny
+  - action_view
+  - action_clear

@@ -7,6 +7,8 @@ nlu:
     - Order a burrito with steak and guacamole
     - I want a bowl with cheese and chicken
     - Give me a diet coke
+    - order a lemonade
+    - add chips and salsa to cart
 
 - intent: greet
   examples: |
@@ -57,43 +59,14 @@ nlu:
     - no way
     - not really
 
-- intent: mood_great
+- intent: view
   examples: |
-    - perfect
-    - great
-    - amazing
-    - feeling like a king
-    - wonderful
-    - I am feeling very good
-    - I am great
-    - I am amazing
-    - I am going to save the world
-    - super stoked
-    - extremely good
-    - so so perfect
-    - so good
-    - so perfect
+    - view cart
+    - view items
+    - look at items
 
-- intent: mood_unhappy
+- intent: clear
   examples: |
-    - my day was horrible
-    - I am sad
-    - I don't feel very well
-    - I am disappointed
-    - super sad
-    - I'm so sad
-    - sad
-    - very sad
-    - unhappy
-    - not good
-    - not very good
-    - extremly sad
-    - so saad
-    - so sad
-
-- intent: bot_challenge
-  examples: |
-    - are you a bot?
-    - are you a human?
-    - am I talking to a bot?
-    - am I talking to a human?
+    - clear cart
+    - remove items from cart
+    - start over

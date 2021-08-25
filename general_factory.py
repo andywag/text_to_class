@@ -93,10 +93,17 @@ class BinaryList(BaseObject):
 
     def __repr__(self):
         cls = type(self)
-        result = [f"{x[0], x[1]}" if x[1] > .8 else "" for x in zip(cls.items, self.values)]
 
-        return ",".join(result)
+        result = [f"{x[0], x[1]}" if x[1] > .8 else None for x in zip(cls.items, self.values)]
+        result = filter(lambda x: x is not None, result)
 
+        return ", ".join(result)
+
+    def __str__(self):
+        cls = type(self)
+        result = [str(x[0]) if x[1] > .8 else None for x in zip(cls.items, self.values)]
+        result = filter(lambda x: x is not None, result)
+        return ", ".join(result)
 
 class MissingItem:
     def __init__(self, index, typ, parent):
@@ -128,10 +135,14 @@ class Combination(BaseObject):
     def update_value(self, value_index, index):
         classes = list(type(self).classes[value_index])
         item = classes[index]
-        self.values[value_index] = FuzzyResult(item, 1.0)
-        print(self.values, self)
-        cls = type(self)
-        return cls(*self.values)
+        #self.values[value_index] = FuzzyResult(item, 1.0)
+        self.values[value_index].result = item
+        self.values[value_index].probability = 1.0
+
+        #cls = type(self)
+        #result = cls(*self.values)
+        #print("Update Value", self.values, result)
+        #return result
 
     def missing_values(self):
         missing = []

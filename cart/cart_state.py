@@ -90,6 +90,10 @@ class Cart:
         self.current = None
         self.current_state = WaitingState(self)
 
+    def contents_response(self):
+        response = [TextResponse(str(x)) for x in self.items]
+        return response
+
     def action(self, update):
         return self.current_state.handle_action(update)
 

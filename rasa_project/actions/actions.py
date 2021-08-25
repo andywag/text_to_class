@@ -39,6 +39,24 @@ def state_to_response(response, dispatcher):
         dispatcher.utter_message(text=response.text, buttons=buttons)
 
 
+class ActionView(Action):
+    def name(self):
+        return "action_view"
+
+    def run(self, dispatcher: CollectingDispatcher, tracker, domain):
+        [state_to_response(x, dispatcher) for x in cart.contents_response()]
+        return []
+
+
+class ActionClear(Action):
+    def name(self):
+        return "action_clear"
+
+    def run(self, dispatcher: CollectingDispatcher, tracker, domain):
+        cart.items = []
+        return []
+
+
 class ActionAffirm(Action):
     def name(self):
         return "action_affirm"
