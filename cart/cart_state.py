@@ -20,11 +20,11 @@ class NoAction(Action):
     def __init__(self):
         pass
 
+
 def handle_update(cart, missing_values, action):
     if len(missing_values) == 0:
         cart.current_state = ConfirmState(cart)
-        return [TextResponse(f"Ok, so you want a {str(cart.current)}"),
-                TextResponse(f"Is that correct?")]
+        return [ChoiceResponse(f"Add {str(cart.current)} to Cart?", ["Yes","No"])]
     else:
         missing_value = missing_values[0]
         cart.current_state = UpdateState(cart, missing_value)
@@ -51,16 +51,26 @@ class ConfirmState(State):
         self.cart = cart
 
     def handle_action(self, action):
-        if isinstance(action, YesAction):
+        def yes_action():
             self.cart.items.append(self.cart.current)
             self.cart.current = None
             self.cart.current_state = WaitingState(self.cart)
             return [TextResponse(f"Added {str(self.cart.items[-1])} to Cart")]
-        elif isinstance(action, NoAction):
+
+        def no_action():
             self.cart.current = None
             self.cart.current_state = WaitingState(self.cart)
             return [TextResponse(f"Dropped Item")]
 
+        if isinstance(action, YesAction):
+            yes_action()
+        elif isinstance(action, NoAction):
+            no_action()
+        elif isinstance(action, Update):
+            if int(action.item) == 0:
+                return yes_action()
+            else:
+                return no_action()
         else:
             pass
 
@@ -91,7 +101,7 @@ class Cart:
         self.current_state = WaitingState(self)
 
     def contents_response(self):
-        response = [TextResponse(str(x)) for x in self.items]
+        response = [TextResponse(f"{i+1}) {str(x)}") for i, x in enumerate(self.items)]
         return response
 
     def action(self, update):

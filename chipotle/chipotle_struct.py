@@ -1,6 +1,6 @@
 
 from general_struct import GenericEnum
-from general_factory import SingleChoice, MultiChoice, BinaryList, Combination
+from general_factory import SingleChoice, MultiChoice, BinaryList, Combination, Wrapper
 
 
 class MealType(GenericEnum):
@@ -30,6 +30,7 @@ class BeanType(GenericEnum):
     PINTO = 1, "Pinto Beans"
     BLACK = 2, "Black Beans"
 
+
 class SideType(GenericEnum):
     CHIPS = 0, 'chips'
     CHIPS_GUAC = 1, 'chips and quacamole'
@@ -37,15 +38,77 @@ class SideType(GenericEnum):
     GUAC = 3, "guacamole"
     TORTILLA = 4, "tortilla"
 
-class DrinkType(GenericEnum):
-    SODA = 0, 'soda'
-    LEMONADE = 1, 'lemonade'
-    HIB_LEMONADE = 2, 'hibiscus lemonade'
-    MAND_FRESCA = 3, 'mandarin agua fresca'
-    BERRY_FRESCA = 4, 'berry agua fresca'
-    MEX_COKE = 5, 'mexican coke'
-    MEX_SPRITE = 6, 'mexican sprite'
 
+class LemonadeType(GenericEnum):
+    NORMAL = 0, 'lemonade'
+    HIBISCUS = 1, 'hibiscus lemonade'
+
+
+class FrescaType(GenericEnum):
+    MANDARIN = 0, 'mandarin agua fresca'
+    BERRY = 1, 'berry agua fresca'
+
+
+class CokeType(GenericEnum):
+    NORMAL = 0, "coke"
+    DIET = 1, 'diet coke'
+    MEXICAN = 2, 'mexican coke'
+
+
+class SodaType(GenericEnum):
+    MEDIUM = 0, "medium soda"
+    LARGE = 1, 'large soda'
+
+
+class Soda(Combination):
+    location = 0
+    classes = [SodaType]
+
+    def __init__(self, soda_type: GenericEnum = SodaType.MEDIUM):
+        super().__init__()
+        self.typ = soda_type
+        self.values = [self.typ]
+
+
+class Lemonade(Combination):
+    classes = [LemonadeType]
+    location = 1
+
+    def __init__(self, typ: GenericEnum = LemonadeType.NORMAL):
+        super().__init__()
+        self.typ = typ
+        self.values = [self.typ]
+
+
+class Fresca(Combination):
+    classes = [FrescaType]
+    location = 2
+
+    def __init__(self, typ: GenericEnum = FrescaType.MANDARIN):
+        super().__init__()
+        self.typ = typ
+
+        self.values = [self.typ]
+
+
+class Coke(Combination):
+    classes = [CokeType]
+    location = 3
+
+    def __init__(self, soda_type: GenericEnum = CokeType.NORMAL):
+        super().__init__()
+        self.typ = soda_type
+        self.values = [self.typ]
+
+
+class Sprite(Combination):
+    classes = [CokeType]
+    location = 4
+
+    def __init__(self, soda_type: GenericEnum = CokeType.NORMAL):
+        super().__init__()
+        self.typ = soda_type
+        self.values = [self.typ]
 
 
 class Options(BinaryList):
@@ -58,26 +121,18 @@ Options.items = ['Cheese', 'Queso Blanco', 'Corn Salsa', 'Mild Salsa', 'Medium G
 
 
 class Side(SingleChoice):
+    generator = SideType
+    location = 1
+    max_classes = 5
+
     def __init__(self, item: GenericEnum):
         super().__init__(item)
-
-
-Side.generator = SideType
-Side.location = 1
-Side.max_classes = 5
-
-
-class Drink(SingleChoice):
-    def __init__(self, item: GenericEnum):
-        super().__init__(item)
-
-
-Drink.generator = DrinkType
-Drink.location = 2
-Drink.max_classes = 5
 
 
 class Meal(Combination):
+    classes = [MealType, MeatType, RiceType, BeanType, Options]
+    location = 0
+
     def __init__(self,
                  meal: GenericEnum = MealType.BURRITO,
                  meat: GenericEnum = MeatType.CHICKEN,
@@ -94,19 +149,46 @@ class Meal(Combination):
         self.values = [self.meal, self.meat, self.rice, self.beans, self.options]
 
     def __repr__(self):
-        return f"{self.meat} {self.meal} with {self.rice}, {self.beans}, {self.options}"
+        def create_options(options):
+            text = ""
+            for i, x in enumerate(options):
+                if i == len(options)-1:
+                    text += " and "
+                elif i > 0:
+                    text += ", "
+                text += str(x)
+            return text
+
+        total_options = [str(self.rice), str(self.beans)] + [str(x) for x in self.options.selected_items()]
+        print(total_options, self.options.values)
+        return f"{self.meat} {self.meal} with {create_options(total_options)}"
 
 
-Meal.classes = [MealType, MeatType, RiceType, BeanType, Options]
+class Drink(MultiChoice):
+    classes = [Soda, Lemonade, Fresca, Coke, Sprite]
 
-
-class Order(MultiChoice):
     def __init__(self, item):
         self.item = item
 
 
-Order.classes = [Meal, Side, Drink]
-Order.generate_ratio = [14/16, 1/16, 1/16]
+class DrinkWrapper(Wrapper):
+    group = Drink
+    location = 2
+
+    def __init__(self, item):
+        self.item = item
+
+
+class Order(MultiChoice):
+    classes = [Meal, Side, DrinkWrapper]
+    generate_ratio = [14/16, 1/16, 1/16]
+
+    def __init__(self, item):
+        self.item = item
+
+
+
+
 
 
 

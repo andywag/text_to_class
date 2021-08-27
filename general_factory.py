@@ -66,6 +66,33 @@ class MultiChoice(BaseObject):
         return data
 
 
+class Wrapper(BaseObject):
+    def __init__(self, item):
+        self.item = item
+
+    @classmethod
+    def from_probs_array(cls, probs, index):
+        return [cls.from_probs(probs, index, x) for x in range(len(probs[0][index]))]
+
+    @classmethod
+    def from_probs(cls, probs, index, row):
+        results = cls.group.from_probs(probs, index+1, row)
+        return results
+
+    def to_label_text(self, row, label, index):
+        label[row, index] = type(self).location
+        return self.item.to_label_text(row, label, index+1)
+
+    @classmethod
+    def random_samples(cls, number: int):
+        # Create random samples based on the underlieing group
+        data = cls.group.random_samples(number)
+        real_data = [cls(x) for x in data]
+        return real_data
+
+
+
+
 class BinaryList(BaseObject):
     def __init__(self, values):
         self.values = values
@@ -76,8 +103,15 @@ class BinaryList(BaseObject):
             if o == 1:
                 label[row, index + i] = 1
                 text += [type(self).items[i]]
+            else:
+                label[row, index + i] = 0
+
         return text
 
+    def selected_items(self, prob=.8):
+        cls = type(self)
+        items = filter(lambda x: x[1] > .8, zip(cls.items, self.values))
+        return [x[0] for x in items]
 
     @classmethod
     def random_samples(cls, number):
@@ -105,6 +139,7 @@ class BinaryList(BaseObject):
         result = filter(lambda x: x is not None, result)
         return ", ".join(result)
 
+
 class MissingItem:
     def __init__(self, index, typ, parent):
         self.index = index
@@ -122,6 +157,8 @@ class MissingItem:
 
 
 class Combination(BaseObject):
+    text = None
+
     def __init__(self):
         pass
 
@@ -129,7 +166,9 @@ class Combination(BaseObject):
         cls = type(self)
         text = ""
         for i, x in enumerate(self.values):
-            text += str(x) + ","
+            if i > 0:
+                text += ","
+            text += str(x)
         return text
 
     def update_value(self, value_index, index):
@@ -139,10 +178,7 @@ class Combination(BaseObject):
         self.values[value_index].result = item
         self.values[value_index].probability = 1.0
 
-        #cls = type(self)
-        #result = cls(*self.values)
-        #print("Update Value", self.values, result)
-        #return result
+
 
     def missing_values(self):
         missing = []
@@ -160,8 +196,10 @@ class Combination(BaseObject):
 
     def to_label_text(self, row, label, index):
         cls = type(self)
-        label[row, index] = 0
+        label[row, index] = cls.location
         text = []
+        if cls.text is not None:
+            text = [cls.text]
         for i, x in enumerate(cls.classes):
             text += self.values[i].to_label_text(row, label, index+i+1)
 

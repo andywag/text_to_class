@@ -12,7 +12,7 @@ DIS = "dis"
 
 class ClassifierTrainer:
     def __init__(self, classifier_description, ckpt=None, training_args=None, tr_batch_size=160,
-                 model = BERT):
+                 model=BERT, batch_size=168, steps_per_save = 500):
         self.classifier_description = classifier_description
 
         if model == BERT or model == BERT4:
@@ -42,14 +42,14 @@ class ClassifierTrainer:
 
         if training_args is None:
             self.training_args = TrainingArguments(model)
-            self.training_args.per_device_train_batch_size = 192-32-32
+            self.training_args.per_device_train_batch_size = batch_size
             self.training_args.per_device_eval_batch_size = 256
 
             self.training_args.logging_steps = 20
             self.training_args.num_train_epochs = 1
             self.training_args.do_eval = True
             self.training_args.do_predict = True
-            self.training_args.save_steps = 500
+            self.training_args.save_steps = steps_per_save
 
     def train(self, input_data, eval_data):
         trainer = Trainer(model=self.model, args=self.training_args,

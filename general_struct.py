@@ -98,9 +98,12 @@ class FuzzyResult:
 
     def __str__(self):
         if isinstance(self.result, list):
-            return str(self.result[0])
+            return ""#str(self.result[0])
         else:
-            return str(self.result)
+            if self.probability > .8:
+                return str(self.result)
+            else:
+                return ""
         #r = self.result
         #p = self.probability
         #if isinstance(self.result, list):
@@ -108,16 +111,16 @@ class FuzzyResult:
         #return f"{r}({'{:.2f}'.format(p)})"
 
 
-
-
 def create_eval_data(data, tokenizer):
     tokenized_data = tokenizer.batch_encode_plus(data, truncation=True, padding='max_length', max_length=40)
     input_data = GeneralDataset(tokenized_data, None, data)
     return input_data
 
-def create_random_data(cls, sim_length, label_length, tokenizer):
+
+def create_random_data(cls, sim_length, label_length, tokenizer, bin_label_length=0):
     data = cls.random_samples(sim_length)
-    labels = np.zeros((sim_length, label_length), dtype=np.int64)
+    labels = -100*np.ones((sim_length, label_length), dtype=np.int64)
+    labels[:,label_length-bin_label_length:] = np.zeros((sim_length, bin_label_length), dtype=np.int64)
     sdata = [x.to_label_text(i, labels, 0) for i, x in enumerate(data)]
     tokenized_data = tokenizer.batch_encode_plus(sdata, truncation=True, padding='max_length', max_length=40)
     input_data = GeneralDataset(tokenized_data, labels, sdata)
