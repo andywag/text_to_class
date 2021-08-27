@@ -17,4 +17,4 @@ COPY . .
 WORKDIR /code/rasa_project
 EXPOSE 5005
 
-CMD [ "rasa", "run", "--credentials", "fb_credentials.yml" ]
+CMD [ "rasa", "run", "--credentials", "fb_credentials.yml","enable-api","--cor","*" ]
