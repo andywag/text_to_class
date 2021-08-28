@@ -101,7 +101,8 @@ class Cart:
         self.current_state = WaitingState(self)
 
     def contents_response(self):
-        response = [f"{i+1}) {str(x)}" for i, x in enumerate(self.items)]
+        response = [f"{i+1}: {str(x)}" for i, x in enumerate(self.items)]
+        #print("\n".join(response))
         response = TextResponse("\n".join(response))
         return [response]
 
