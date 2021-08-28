@@ -15,6 +15,7 @@ COPY . .
 
 # command to run on container start
 WORKDIR /code/rasa_project
+RUN rasa train
 EXPOSE 5005
 
-CMD [ "rasa", "run", "--credentials", "fb_credentials.yml","enable-api","--cor","*" ]
+CMD [ "rasa", "run", "--credentials", "fb_credentials.yml","--enable-api","--cor","*" ]
