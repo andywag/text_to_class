@@ -5,12 +5,12 @@ import React, { useState, useEffect } from 'react';
 import { Widget, addResponseMessage, setQuickButtons, handleQuickButtonClicked } from 'react-chat-widget';
 
 import 'react-chat-widget/lib/styles.css';
-//const hostname = process.env.HOSTNAME + ":5005/webhooks/rest/webhook"
-const hostname = "http://localhost:5005/webhooks/rest/webhook"
+const hostname = "http://20.57.184.176:5005/webhooks/rest/webhook"
+//const hostname = "http://localhost:5005/webhooks/rest/webhook"
 
 function App() {
     useEffect(() => {
-        addResponseMessage('Welcome to this awesome chat!');
+        addResponseMessage('Welcome');
     }, []);
 
     const createButton = (x) => {

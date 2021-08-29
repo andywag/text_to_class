@@ -13,7 +13,7 @@ There are a couple of these chatbots.
 
 ## Chipotle
 This example is based on ordering chipotle with a basic description of the menu coded. This is currently running on 
-a Facebook messenger or locally at http://andywag.github.io/. Thie logit for this is somewhat rudimentary currently but 
+a Facebook messenger or on a [cloud server](http://20.57.184.176:5000/). The logic for this is somewhat rudimentary currently but 
 does show the logic in determining the order based on a generic entry. 
 
 Some examples are: 
