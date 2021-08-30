@@ -1,8 +1,9 @@
 
 from aenum import Enum, MultiValue
-from classifier_description import ClassifierSpecInt, ClassifierDescription
 import numpy as np
-from classifier_dataset import GeneralDataset
+
+from python.classifier_description import ClassifierSpecInt, ClassifierDescription
+from python.classifier_dataset import GeneralDataset
 from transformers import BertConfig, BertTokenizer, BertTokenizerFast
 
 

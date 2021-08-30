@@ -7,16 +7,19 @@
 from rasa_sdk import Action
 from rasa_sdk.executor import CollectingDispatcher
 import sys
-sys.path.append(".")
-sys.path.append("chipotle")
+import traceback
 
-from chipotle.chipotle_server import InferenceEngine
+sys.path.append("..")
+
+from general.inference_engine import InferenceEngine
+from chipotle.chipotle_struct import classifier_description
+from chipotle.chipotle_struct import Order as ChipotleOrder
+
 from cart.cart_state import Cart, Order, Update, YesAction, NoAction
 from state_machine import TextResponse, ChoiceResponse, SharedState
 
 
 cart_store = SharedState(Cart)
-
 
 def get_state(id):
     return cart_store.get_state(id)
@@ -38,10 +41,14 @@ def state_to_response(cart, response, dispatcher):
         print("Response", response.text, buttons)
         dispatcher.utter_message(text=response.text, buttons=buttons)
 
-def internal_exception(dispatcher):
+def internal_exception(dispatcher, e):
     print("Internal Exception")
-    cart = SharedState(Cart)
+    traceback.print_exc()
+    if e is not None:
+        print("Error", e)
     dispatcher.utter_message("Internal Error, Cart Reset")
+
+    cart = SharedState(Cart)
 
 class ActionView(Action):
     def name(self):
@@ -51,8 +58,8 @@ class ActionView(Action):
         try:
             cart = get_state(tracker.sender_id)
             [state_to_response(cart, x, dispatcher) for x in cart.contents_response()]
-        except:
-            internal_exception(dispatcher)
+        except Exception as e:
+            internal_exception(dispatcher, e)
 
         return []
 
@@ -65,8 +72,8 @@ class ActionClear(Action):
         try:
             cart = get_state(tracker.sender_id)
             cart.items = []
-        except:
-            internal_exception(dispatcher)
+        except Exception as e:
+            internal_exception(dispatcher, e)
 
         return []
 
@@ -80,8 +87,8 @@ class ActionAffirm(Action):
             cart = get_state(tracker.sender_id)
             result = cart.action(YesAction())
             [state_to_response(cart, x, dispatcher) for x in result]
-        except:
-            internal_exception(dispatcher)
+        except Exception as e:
+            internal_exception(dispatcher, e)
 
         return []
 
@@ -95,8 +102,8 @@ class ActionDeny(Action):
             cart = get_state(tracker.sender_id)
             result = cart.action(NoAction())
             [state_to_response(cart, x, dispatcher) for x in result]
-        except:
-            internal_exception(dispatcher)
+        except Exception as e:
+            internal_exception(dispatcher, e)
 
         return []
 
@@ -113,18 +120,16 @@ class ActionButtonResponse(Action):
 
             result = cart.action(Update(index))
             [state_to_response(cart, x, dispatcher) for x in result]
-        except:
-            internal_exception(dispatcher)
+        except Exception as e:
+            internal_exception(dispatcher, e)
 
         return []
 
 
 class ActionOrder(Action):
     def __init__(self):
-        checkpoint_folder = None#os.environ.get("CHECKPOINT_LOCATION")
-        if checkpoint_folder is None:
-            checkpoint_folder = "../chipotle/"
-        self.engine = InferenceEngine(f"{checkpoint_folder}/bert4/checkpoint-4500")
+        checkpoint_folder = "chipotle/"
+        self.engine = InferenceEngine(classifier_description, f"{checkpoint_folder}/bert4/checkpoint-4500")
 
     def name(self):
         return "action_order"
@@ -132,7 +137,8 @@ class ActionOrder(Action):
     def run(self, dispatcher: CollectingDispatcher, tracker, domain):
         try:
             # Run ML on input data
-            response = self.engine.eval([tracker.latest_message['text']])
+            print(f"Running Evaluation {tracker.latest_message['text']}")
+            response = self.engine.eval([tracker.latest_message['text']], ChipotleOrder)
             print(f"Found Object {response}")
             # Append the Order to the Cart
             cart = get_state(tracker.sender_id)
@@ -140,7 +146,8 @@ class ActionOrder(Action):
             if result is not None:
                 [state_to_response(cart, x, dispatcher) for x in result]
         except:
-            internal_exception(dispatcher)
+            print("Running Exception")
+            internal_exception(dispatcher, None)
 
         return []
 

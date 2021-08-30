@@ -1,6 +1,6 @@
 
 from parse_files import create_order
-from python.general_struct import GeneralClassifierStruct, create_random_data, create_eval_data
+from python.general.general_struct import GeneralClassifierStruct, create_random_data, create_eval_data
 from python.classifier_trainer import ClassifierTrainer
 
 classifier_description = GeneralClassifierStruct([10, 256], 0)

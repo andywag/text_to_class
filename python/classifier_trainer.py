@@ -1,9 +1,11 @@
 
-from model import BertForMultiSequenceClassification, AlbertForMultiSequenceClassification, DistilBertForMultiSequenceClassification
 from transformers import Trainer, TrainingArguments
 from transformers import BertTokenizer, AlbertTokenizer, DistilBertTokenizerFast
 import numpy as np
 from scipy.special import softmax
+
+from python.model import BertForMultiSequenceClassification, AlbertForMultiSequenceClassification, DistilBertForMultiSequenceClassification
+
 
 ALBERT = "albert"
 BERT = "bert"

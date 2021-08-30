@@ -10,10 +10,10 @@ COPY ./requirements.txt requirements.txt
 # install dependencies
 RUN pip install -r requirements.txt
 # copy the content of the local src directory to the working directory
-COPY . .
+COPY . /python
 
 # command to run on container start
-WORKDIR /
+WORKDIR /python
 
 EXPOSE 5055
 CMD [ "rasa", "run", "actions" ]

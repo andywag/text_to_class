@@ -1,6 +1,8 @@
 
-from general_struct import GenericEnum
-from general_factory import SingleChoice, MultiChoice, BinaryList, Combination, Wrapper
+from python.general.general_struct import GenericEnum, GeneralClassifierStruct
+from python.general.general_factory import SingleChoice, MultiChoice, BinaryList, Combination, Wrapper
+
+classifier_description = GeneralClassifierStruct([3, 8, 5, 5, 5], 11)
 
 
 class MealType(GenericEnum):
@@ -14,6 +16,7 @@ class MealType(GenericEnum):
     def label():
         return "Meal"
 
+
 class MeatType(GenericEnum):
     CHICKEN = 0, "Chicken"
     STEAK = 1, "Steak"
@@ -24,6 +27,7 @@ class MeatType(GenericEnum):
     @staticmethod
     def label():
         return "Meat"
+
 
 class RiceType(GenericEnum):
     NONE = 0, "No Rice"
