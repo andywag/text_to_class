@@ -38,22 +38,13 @@ def state_to_response(cart, response, dispatcher):
         print("Response", response.text, buttons)
         dispatcher.utter_message(text=response.text, buttons=buttons)
 
-def internal_exception(dispatcher):
-    print("Internal Exception")
-    cart = SharedState(Cart)
-    dispatcher.utter_message("Internal Error, Cart Reset")
 
 class ActionView(Action):
     def name(self):
         return "action_view"
 
     def run(self, dispatcher: CollectingDispatcher, tracker, domain):
-        try:
-            cart = get_state(tracker.sender_id)
-            [state_to_response(cart, x, dispatcher) for x in cart.contents_response()]
-        except:
-            internal_exception(dispatcher)
-
+        dispatcher.utter_message("action_view")
         return []
 
 
@@ -62,12 +53,7 @@ class ActionClear(Action):
         return "action_clear"
 
     def run(self, dispatcher: CollectingDispatcher, tracker, domain):
-        try:
-            cart = get_state(tracker.sender_id)
-            cart.items = []
-        except:
-            internal_exception(dispatcher)
-
+        dispatcher.utter_message("action_clear")
         return []
 
 
@@ -76,13 +62,9 @@ class ActionAffirm(Action):
         return "action_affirm"
 
     def run(self, dispatcher: CollectingDispatcher, tracker, domain):
-        try:
-            cart = get_state(tracker.sender_id)
-            result = cart.action(YesAction())
-            [state_to_response(cart, x, dispatcher) for x in result]
-        except:
-            internal_exception(dispatcher)
-
+        cart = get_state(tracker.sender_id)
+        result = cart.action(YesAction())
+        [state_to_response(cart, x, dispatcher) for x in result]
         return []
 
 
@@ -91,13 +73,9 @@ class ActionDeny(Action):
         return "action_deny"
 
     def run(self, dispatcher: CollectingDispatcher, tracker, domain):
-        try:
-            cart = get_state(tracker.sender_id)
-            result = cart.action(NoAction())
-            [state_to_response(cart, x, dispatcher) for x in result]
-        except:
-            internal_exception(dispatcher)
-
+        cart = get_state(tracker.sender_id)
+        result = cart.action(NoAction())
+        [state_to_response(cart, x, dispatcher) for x in result]
         return []
 
 
@@ -106,42 +84,35 @@ class ActionButtonResponse(Action):
         return "action_button_response"
 
     def run(self, dispatcher: CollectingDispatcher, tracker, domain):
-        try:
-            index = tracker.latest_message['entities'][0]['value']
-            cart = get_state(tracker.sender_id)
-            print("Handle Response", cart.current_state, index)
+        index = tracker.latest_message['entities'][0]['value']
+        cart = get_state(tracker.sender_id)
+        print("Handle Response", cart.current_state, index)
 
-            result = cart.action(Update(index))
-            [state_to_response(cart, x, dispatcher) for x in result]
-        except:
-            internal_exception(dispatcher)
-
+        result = cart.action(Update(index))
+        [state_to_response(cart, x, dispatcher) for x in result]
         return []
 
 
 class ActionOrder(Action):
+
     def __init__(self):
-        checkpoint_folder = None#os.environ.get("CHECKPOINT_LOCATION")
-        if checkpoint_folder is None:
-            checkpoint_folder = "../chipotle/"
+        # TODO : Deal with paths for checkpoint folder
+        checkpoint_folder = "../chipotle/"
         self.engine = InferenceEngine(f"{checkpoint_folder}/bert4/checkpoint-4500")
 
     def name(self):
         return "action_order"
 
     def run(self, dispatcher: CollectingDispatcher, tracker, domain):
-        try:
-            # Run ML on input data
-            response = self.engine.eval([tracker.latest_message['text']])
-            print(f"Found Object {response}")
-            # Append the Order to the Cart
-            cart = get_state(tracker.sender_id)
-            result = cart.action(Order(response[0]))
-            if result is not None:
-                [state_to_response(cart, x, dispatcher) for x in result]
-        except:
-            internal_exception(dispatcher)
 
+        # Run ML on input data
+        response = self.engine.eval([tracker.latest_message['text']])
+        print(f"Found Object {response}")
+        # Append the Order to the Cart
+        cart = get_state(tracker.sender_id)
+        result = cart.action(Order(response[0]))
+        if result is not None:
+            [state_to_response(cart, x, dispatcher) for x in result]
         return []
 
 
