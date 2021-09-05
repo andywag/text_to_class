@@ -27,10 +27,13 @@ const theme = createMuiTheme({
 const ref = "https://github.com/andywag/text_to_class"
 
 function App() {
+    const [table_list, setTableList] = useState([])
 
     return (
     <div className="App">
-        <Chat></Chat>
+        <Chat table_list = {table_list}
+              setTableList = {setTableList}
+        ></Chat>
         <MuiThemeProvider theme={theme}>
         <div className="Intro">
             <h1>Restaurant Chatbot Demo</h1>
@@ -49,7 +52,7 @@ function App() {
             </ul>
         </div>
         </MuiThemeProvider>
-        <Table></Table>
+        <Table table_list = {table_list}></Table>
       <header className="App-header">
       </header>
     </div>

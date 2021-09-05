@@ -2,6 +2,8 @@
 from python.classifier_trainer import ClassifierTrainer, BERT4
 from python.general.general_struct import create_eval_data
 
+
+
 class InferenceEngine:
     # Engine to handle inference based on a trained model
     def __init__(self, classifier_description, checkpoint, model=BERT4):
@@ -16,6 +18,8 @@ class InferenceEngine:
         probs = self.trainer.get_probs(p)
         infer_results = desired_object.from_probs_array(probs, 0)
         return infer_results
+
+
 
 
 

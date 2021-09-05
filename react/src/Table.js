@@ -3,6 +3,7 @@ import {addResponseMessage, setQuickButtons, Widget} from "react-chat-widget";
 import logo from "./logo.svg";
 
 import 'react-chat-widget/lib/styles.css';
+import orderToString from './OrderDisplay.js';
 
 import DenseTable from "material-table";
 import { Grid, MuiThemeProvider, Button } from "@material-ui/core";
@@ -25,9 +26,12 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import blue from '@material-ui/core/colors/blue';
+import { useState } from 'react';
 
 
-function Table() {
+function Table(props) {
+    //const [table_data, setData] = useState([])
+
 
     const theme = createMuiTheme({
         direction: "ltr",
@@ -57,13 +61,11 @@ function Table() {
         ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
     };
 
+    const createTableField = (x) => {
+        return {item : orderToString(x), prob: 1.0};
+    }
+
     const tableColumns = [
-        { title: "Index", field: "index", type: "numeric",
-            cellStyle: { width: "5%", maxWidth: "5%" },
-            headerStyle: { width: "5%", maxWidth: "5%" }},
-        { title: "Number", field: "number", type: "numeric",
-            cellStyle: { width: "5%", maxWidth: "5%" },
-            headerStyle: { width: "5%", maxWidth: "5%" }},
         { title: "Item",  field: "item",
             cellStyle: { width: "80%", maxWidth: "80%" },
             headerStyle: { width: "80%", maxWidth: "80%" }},
@@ -79,14 +81,7 @@ function Table() {
             <DenseTable
                 icons={tableIcons}
                 columns={tableColumns}
-                data={[
-                    {
-                        index: 1,
-                        number: 2,
-                        item: "diet coke",
-                        prob: .5,
-                    },
-                ]}
+                data={props.table_list.map(x => createTableField(x))}
                 title="Cart Contents"
                 options={{
                     headerStyle: { backgroundColor: "black", color: "white" },

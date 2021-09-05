@@ -1,0 +1,148 @@
+
+syntax = "proto3";
+
+message Lemonade {
+
+  enum LemonadeType {
+    UNKNOWN = 0;
+    LEMONADE = 1;
+    HIBISCUS_LEMONADE = 2;
+  }
+  LemonadeType drink = 1;
+}
+
+message Fresca {
+  enum FrescaType {
+    UNKNOWN = 0;
+    MANDARIN_AGUA_FRESCA = 1;
+    BERRY_AGUA_FRESCA = 2;
+  }
+  FrescaType drink = 1;
+}
+
+message Coke {
+  enum CokeType {
+    UNKNOWN = 0;
+    COKE = 1;
+    DIET_COKE = 2;
+    MEXICAN_COKE = 3;
+  }
+  CokeType drink = 1;
+}
+
+
+message Sprite {
+  enum SpriteType {
+    UNKNOWN = 0;
+    SPRITE = 1;
+    MEXICAN_SPRITE = 2;
+  }
+  SpriteType drink = 1;
+}
+
+message Soda {
+  enum SodaType {
+    UNKNOWN = 0;
+    MEDIUM_SODA = 1;
+    LARGE_SODA = 2;
+  }
+  SodaType drink = 1;
+}
+
+message Drink {
+  oneof drink {
+    Soda soda = 1;
+    Lemonade lemonade = 2;
+    Fresca fresca = 3;
+    Coke coke = 4;
+    Sprite sprite = 5;
+  }
+}
+
+
+message Side {
+  enum SideType {
+    UNKNOWN = 0;
+    CHIPS = 1;
+    CHIPS_AND_GUACAMOLE = 2;
+    CHIPS_AND_SALSA = 3;
+    GUACAMOLE = 4;
+    TORTILLA = 5;
+  }
+  SideType side = 1;
+}
+message Meal {
+  enum MealType {
+    UNKNOWN_MEAL = 0;
+    BURRITO = 1;
+    SOFT_TACOS = 2;
+    CRISPY_TACOS = 3;
+    SALAD = 4;
+    BOWL = 5;
+  }
+  enum MeatType {
+    UNKNOWN_MEAT = 0;
+    CHICKEN = 1;
+    STEAK = 2;
+    BARBACOA = 3;
+    CARNITAS = 4;
+    VEGGIE = 5;
+  }
+
+  enum RiceType {
+    UNKNOWN_RICE = 0;
+    NO_RICE = 1;
+    WHITE_RICE = 2;
+    BROWN_RICE = 3;
+  }
+
+  enum BeanType {
+    UNKNOWN_BEANS = 0;
+    NO_BEANS = 1;
+    PINTO_BEANS = 2;
+    BLACK_BEANS = 3;
+  }
+
+  MealType meal_type = 1;
+  MeatType meat_type = 2;
+  RiceType rice_type = 3;
+  BeanType bean_type = 4;
+
+
+  float Cheese = 5;
+  float QuesoBlanco = 6;
+  float CornSalsa = 7;
+  float MildSalsa = 8;
+  float MediumGreenSalsa = 9;
+  float HotRedSalsa = 10;
+  float SourCream = 11;
+  float Guacamole = 12;
+  float Fajitas = 13;
+  float Lettuce = 14;
+  float DoubleWrap = 15;
+
+}
+
+message Order {
+  oneof order {
+    Meal meal= 1;
+    Side side = 2;
+    Drink drink = 3;
+  }
+}
+
+message Response {
+  enum Action {
+    UNKNOWN = 0;
+    VIEW = 1;
+    CLEAR = 2;
+    AFFIRM = 3;
+    DENY = 4;
+    ORDER = 5;
+    REMOVE = 6;
+
+  }
+  Order order = 1;
+  Action action = 2;
+  repeated float probabilities = 3;
+}

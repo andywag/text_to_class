@@ -53,16 +53,17 @@ class ClassifierTrainer:
             self.training_args.do_predict = True
             self.training_args.save_steps = steps_per_save
 
-    def train(self, input_data, eval_data):
+    def train(self, input_data, eval_data=None):
+
         trainer = Trainer(model=self.model, args=self.training_args,
-                          train_dataset=input_data, eval_dataset=eval_data)
+                          train_dataset=input_data)
         trainer.train()
 
-    def infer(self, input_data, eval_data):
+    def infer(self, input_data):
         self.training_args.do_train = False
         trainer = Trainer(model=self.model, args=self.training_args,
-                          train_dataset=input_data, eval_dataset=eval_data)
-        result = trainer.predict(eval_data)
+                          eval_dataset=input_data)
+        result = trainer.predict(input_data, input_data)
         return result
 
     def get_probs(self, p):

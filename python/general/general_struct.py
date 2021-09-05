@@ -87,6 +87,9 @@ class GeneralClassifierStruct(ClassifierDescription):
         if binary > 0:
             self.specs.append(ClassifierBinaryStruct(self.binary))
 
+    def total_dims(self):
+        return len(self.multi) + self.binary
+
 
 class FuzzyResult:
     def __init__(self, result, probability):
