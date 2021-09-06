@@ -3,12 +3,12 @@ import {addResponseMessage, setQuickButtons, Widget} from "react-chat-widget";
 import logo from "./logo.svg";
 import proto from "./chipotle_pb"
 import 'react-chat-widget/lib/styles.css';
-import orderToString from './OrderDisplay.js';
+import {orderToString, orderMissing} from './OrderDisplay.js';
 
 var protos = require("./model.js")
 
-//const hostname = "http://20.57.184.176:5005/webhooks/rest/webhook"
-const hostname = "http://localhost:5005/webhooks/rest/webhook"
+const hostname = "http://20.57.184.176:5005/webhooks/rest/webhook"
+//const hostname = "http://localhost:5005/webhooks/rest/webhook"
 
 
 
@@ -17,44 +17,57 @@ function Chat(props) {
         addResponseMessage('Welcome');
     }, []);
 
-    const createButton = (x) => {
-        return {label:x.title, value:x.payload};
+    const createButton = (x, y) => {
+        console.log("Create Button", x);
+        return {label:x, value:y};
     }
+
+    const createRefineButton = (choices) => {
+        console.log("Refining", choices)
+        return choices.map(x => createButton(x.title, x.result));
+    }
+
+    const affirmDenyButtons = [{label:'Yes', value:'Yes'}, {label:'No', value:'No'}];
+
+
     const handleJsonSingle = (json) => {
         //console.log(`json`, json);
         if (json.hasOwnProperty('text')) {
             addResponseMessage(json.text);
         }
         if (json.hasOwnProperty("buttons")) {
-            let buttons = json.buttons.map(x => createButton(x));
+            let buttons = json.buttons.map(x => createButton(x,x));
             setQuickButtons(buttons);
         }
         if (json.hasOwnProperty("custom")) {
+
             let json_value = JSON.parse(json.custom)
+            //props.setCurrentOrder(json_value)
+
             let result = protos.Response.fromObject(json_value);
             console.log("Json Value", json_value, result);
 
-            //console.log("Response", result, result.action, result.toJSON());
             if (result.action == protos.Response.Action.CLEAR) {
                 props.setTableList([]);
             }
             else if (result.action == protos.Response.Action.ORDER) {
-                //console.log("Oder", result.order);
-                //console.log("OrderToString", orderToString(result.order));
-                orderToString(result.order);
-                let newList = props.table_list.concat([result.order]);
-                props.setTableList(newList);
-                //console.log("Added Item", props.table_list, new_table)
-                //console.log("CT", protos.Coke.CokeType)
+                let missing = orderMissing(result.order);
+                props.setCurrentOrder(result.order)
+
+                if (missing) {
+                    console.log("Missing", missing);
+                    addResponseMessage("What " +  missing.title + " would you like?");
+                    let buttons = createRefineButton(missing.choices);
+                    setQuickButtons(buttons);
+                }
+                else {
+                    addResponseMessage("Add " + orderToString(result.order) + " to cart?");
+                    setQuickButtons(affirmDenyButtons);
+                }
+                //let newList = props.table_list.concat([result.order]);
+                //props.setTableList(newList);
             }
-            //var myBuffer = [];
-            //var buffer = new Buffer(str, 'base64');
 
-            //console.log("Custom", str, buffer);
-
-
-            //let res = proto.Response.deserializeBinary(buffer);
-            //console.log("Result", res, res.toObject());
         }
     }
     const handleJsonResponse = (json) => {
@@ -87,9 +100,34 @@ function Chat(props) {
     }
 
     const handleQuickButtonClicked = (message) => {
-        //console.log('quick button clicked ' + message)
+        console.log('quick button clicked ' + message)
         setQuickButtons([])
-        postMessage(message);
+        if (message == "Yes") {
+            let newList = props.table_list.concat([props.currentOrder]);
+            props.setTableList(newList);
+            props.setCurrentOrder({})
+        }
+        else {
+            console.log("Message", message, typeof message, typeof props.currentOrder)
+            let newOrder = protos.Order.create(message)
+            props.setCurrentOrder(newOrder);
+            let missing = orderMissing(message);
+            if (missing) {
+                console.log("Missing", missing);
+                addResponseMessage("What " +  missing.title + " would you like?");
+                let buttons = createRefineButton(missing.choices);
+                setQuickButtons(buttons);
+            }
+            else {
+                console.log("Setting Order", props.currentOrder, newOrder)
+                let newList = props.table_list.concat([newOrder]);
+                props.setTableList(newList);
+                props.setCurrentOrder({})
+
+            }
+        }
+
+
     }
 
     return (

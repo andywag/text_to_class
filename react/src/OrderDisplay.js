@@ -1,4 +1,7 @@
 
+var protos = require("./model.js")
+
+
 function getLeafText(leafNodes, obj){
     if (obj) {
         if (typeof obj === "string" || obj instanceof String) {
@@ -61,4 +64,79 @@ function orderToString(order) {
     }
 }
 
-export default orderToString;
+function copy(aObject) {
+    if (!aObject) {
+        return aObject;
+    }
+
+    let v;
+    let bObject = Array.isArray(aObject) ? [] : {};
+    for (const k in aObject) {
+        v = aObject[k];
+        bObject[k] = (typeof v === "object") ? copy(v) : v;
+    }
+
+    return bObject;
+}
+
+function orderMissing(order) {
+
+    let createChoices = (x, order, type, index) => {
+        let new_order = copy(order); //JSON.parse(JSON.stringify(order));
+        new_order.meal[type] = index;
+        console.log("Create Choice", new_order)
+        return {title:x, result:new_order};
+    }
+
+    let handleType = (order, type, typeString, title) => {
+        if (!order.meal.hasOwnProperty(typeString) || order.meal[typeString] == 0) {
+            console.log("Prototypes", Object.keys(type));
+            let types = Object.keys(type);
+            let choices = types.slice(1).map( (x,i) => createChoices(x, order, typeString, i + 1))
+            return {type:typeString, choices:choices, title :title}
+        }
+        return null
+    }
+
+    if (order.hasOwnProperty("meal")) {
+        let meal = order.meal;
+
+        let ret = handleType(order, protos.Meal.MealType, 'mealType', 'meal')
+        if (ret) return ret
+
+        ret = handleType(order, protos.Meal.MeatType, 'meatType', 'meat')
+        if (ret) return ret
+
+        ret = handleType(order, protos.Meal.RiceType, 'riceType', 'rice')
+        if (ret) return ret
+
+        ret = handleType(order, protos.Meal.BeanType, 'beanType', 'beans')
+        if (ret) return ret;
+        return null;
+
+        /*
+        if (!meal.hasOwnProperty("mealType")) {
+            console.log("Prototypes", Object.keys(protos.Meal.MealType));
+            let types = Object.keys(protos.Meal.MealType);
+            let choices = types.slice(1).map( x => createChoices(x, order, 'mealType'))
+            return {type:'mealType', choices:choices, title :'meal'}
+        }
+        if (!meal.hasOwnProperty("meatType")) {
+            let types = Object.keys(protos.Meal.MeatType);
+            return {type:'meatType', choices:types.slice(1), title: 'meat'}
+        }
+        if (!meal.hasOwnProperty("riceType")) {
+            let types = Object.keys(protos.Meal.RiceType);
+            return {type:'riceType', choices:types.slice(1), title: 'rice'}
+        }
+        if (!meal.hasOwnProperty("beanType")) {
+            let types = Object.keys(protos.Meal.BeanType);
+            return {type:'beanType', choices:types.slice(1), title: 'bean'}
+        }
+        */
+
+    }
+
+}
+
+export {orderToString, orderMissing};

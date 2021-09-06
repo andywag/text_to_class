@@ -3,7 +3,7 @@ import {addResponseMessage, setQuickButtons, Widget} from "react-chat-widget";
 import logo from "./logo.svg";
 
 import 'react-chat-widget/lib/styles.css';
-import {orderToString} from './OrderDisplay.js';
+import orderToString from './OrderDisplay.js';
 
 import DenseTable from "material-table";
 import { Grid, MuiThemeProvider, Button } from "@material-ui/core";
@@ -29,7 +29,7 @@ import blue from '@material-ui/core/colors/blue';
 import { useState } from 'react';
 
 
-function Table(props) {
+function TableCurrent(props) {
     //const [table_data, setData] = useState([])
 
 

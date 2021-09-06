@@ -22,6 +22,5 @@ RUN protoc --python_out . ./chipotle.proto
 # command to run on container start
 WORKDIR /python
 
-# python3 -m rasa_sdk --actions proto_actions --p 5006
 EXPOSE 5055
 CMD ["python", "-m", "rasa_sdk", "--actions", "proto_actions"]

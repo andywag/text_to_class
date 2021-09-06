@@ -88,9 +88,6 @@ class ActionOrder(Action):
         response.action = dummy_response.Action.ORDER
         response.order.CopyFrom(order[0])
         send_response(dispatcher, response)
-        #print("Response", response[0])
-        #response_string = response[0].SerializeToString()
-        #dispatcher.utter_message(json_message={"response": response_string.decode("utf-64")})
 
         return []
 
