@@ -2,9 +2,10 @@
 from aenum import Enum
 import numpy as np
 
-from text_to_class.classifier_description import ClassifierSpecInt, ClassifierDescription
-from text_to_class.classifier_dataset import GeneralDataset
-
+from text_to_class.classifier.classifier_description import ClassifierDescription
+from text_to_class.classifier.classifier_types import ClassifierMultiStruct, ClassifierBinaryStruct
+from text_to_class.classifier.classifier_dataset import GeneralDataset
+from typing import List
 
 class GenericEnum(Enum):
 
@@ -41,44 +42,16 @@ class GenericEnum(Enum):
             return FuzzyResult(use_data, prob)
 
 
-class BinaryList:
-    def __init__(self, values):
-        self.values = values
-
-    @classmethod
-    def random_samples(cls, number):
-        indices = np.random.randint(0, 2, size=(number, len(cls.items())), dtype=np.int64)
-        options = [cls(indices[x, :].flatten()) for x in range(number)]
-        return options
-
-    def to_label_text(self, row, label, index):
-        label[row, index] = int(self)
-        return [str(self)]
-
-
-# Binary Classifier Based on a set of Tags
-class ClassifierMultiStruct(ClassifierSpecInt):
-    def __init__(self, size):
-        super().__init__(binary=False)
-        self.size = size
-
-    def num_labels(self):
-        return self.size
-
-
-class ClassifierBinaryStruct(ClassifierSpecInt):
-    def __init__(self, size):
-        super().__init__(binary=True)
-        self.size = size
-
-    def num_labels(self):
-        return self.size
-
-
 class GeneralClassifierStruct(ClassifierDescription):
-    def __init__(self, multi, binary):
+    """ Classifier structure for Trainer/Inference Block
+        :param multi : List of classes per classifier
+        :param binary : Number of binary classifiers
+        :param per_token_spec : Extra per token classifier
+    """
+    def __init__(self, multi: List[int], binary: int, per_token_spec: bool = False):
         self.multi = multi
         self.binary = binary
+        self.per_token_spec = per_token_spec
 
         self.specs = list()
         for m in multi:

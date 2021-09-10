@@ -1,11 +1,3 @@
-from text_to_class.general.general_struct import GenericEnum, GeneralClassifierStruct
-import numpy as np
-from text_to_class.classifier_dataset import GeneralDataset
-
-
-
-
-
 def create_base_choice(probabilities, indices, proto_top, row, column):
     index = indices[column][row]
     found_item = proto_top.DESCRIPTOR.fields[index]

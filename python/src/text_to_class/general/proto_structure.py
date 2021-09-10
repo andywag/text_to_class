@@ -1,7 +1,7 @@
 
-from text_to_class.classifier_trainer import ClassifierTrainer, BERT4
+from text_to_class.classifier.classifier_trainer import ClassifierTrainer, BERT4
 from text_to_class.general.samples_from_proto import create_random_samples
-from text_to_class.classifier_dataset import GeneralDataset
+from text_to_class.classifier.classifier_dataset import GeneralDataset
 from text_to_class.general.probs_to_proto import create_structure
 
 

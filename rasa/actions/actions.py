@@ -12,8 +12,8 @@ import traceback
 sys.path.append("../../..")
 
 from general.inference_engine import InferenceEngine
-from text_to_class.chipotle.chipotle_struct import classifier_description
-from text_to_class.chipotle.chipotle_struct import Order as ChipotleOrder
+from text_to_class.chipotle.old.chipotle_struct import classifier_description
+from text_to_class.chipotle.old.chipotle_struct import Order as ChipotleOrder
 
 from text_to_class.cart.cart_state import Cart, Order, Update, YesAction, NoAction
 from state_machine import TextResponse, ChoiceResponse, SharedState

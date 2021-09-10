@@ -1,7 +1,7 @@
 
 from parse_files import create_order
 from text_to_class.general.general_struct import GeneralClassifierStruct, create_random_data, create_eval_data
-from text_to_class.classifier_trainer import ClassifierTrainer
+from text_to_class.classifier.classifier_trainer import ClassifierTrainer
 
 classifier_description = GeneralClassifierStruct([10, 256], 0)
 

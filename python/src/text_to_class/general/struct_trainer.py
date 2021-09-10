@@ -1,6 +1,6 @@
 
-from text_to_class.general.general_struct import GeneralClassifierStruct, create_random_data, create_eval_data
-from text_to_class.classifier_trainer import ClassifierTrainer, BERT4
+from text_to_class.general.general_struct import create_random_data
+from text_to_class.classifier.classifier_trainer import ClassifierTrainer, BERT4
 
 
 def train(classifier_description, data_type, model=BERT4):

@@ -11,11 +11,10 @@ class ChipotleProtoStructure(ProtoStructure):
 
 if __name__ == "__main__":
     proto_structure = ChipotleProtoStructure()
-    proto_structure.train(1000000)
+    #proto_structure.train(1000000)
     #proto_results = proto_structure.infer_text(["steak burrito"],"bert4/checkpoint-7500")
-    #proto_results = proto_structure.infer_random("bert4/checkpoint-7500")
-
-
+    proto_results = proto_structure.infer_random("../../../../checkpoints/chipotle/bert4/checkpoint-7500")
+    pass
 
 pass
 

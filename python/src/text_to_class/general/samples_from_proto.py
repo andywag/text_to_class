@@ -1,5 +1,5 @@
 import numpy as np
-from text_to_class.classifier_dataset import GeneralDataset
+from text_to_class.classifier.classifier_dataset import GeneralDataset
 import random
 
 def name_to_string(item):

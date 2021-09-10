@@ -4,7 +4,7 @@ from transformers import BertTokenizer, AlbertTokenizer, DistilBertTokenizerFast
 import numpy as np
 from scipy.special import softmax
 
-from text_to_class.model import BertForMultiSequenceClassification, AlbertForMultiSequenceClassification, DistilBertForMultiSequenceClassification
+from text_to_class.classifier.model import BertForMultiSequenceClassification, AlbertForMultiSequenceClassification, DistilBertForMultiSequenceClassification
 
 
 ALBERT = "albert"
