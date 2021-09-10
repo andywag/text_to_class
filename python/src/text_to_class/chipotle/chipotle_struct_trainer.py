@@ -1,8 +1,6 @@
 
 from chipotle_struct import Order
-from python.general.general_struct import GeneralClassifierStruct, create_random_data
-from python.classifier_trainer import ClassifierTrainer, BERT4
-from python.general.struct_trainer import train, infer
+from text_to_class.src.text_to_class.general.struct_trainer import train, infer
 from chipotle_struct import classifier_description
 
 

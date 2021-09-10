@@ -1,6 +1,6 @@
 
-from python.general.general_struct import GenericEnum, GeneralClassifierStruct
-from python.general.general_factory import SingleChoice, MultiChoice, BinaryList, Combination, Wrapper
+from text_to_class.general.general_struct import GenericEnum, GeneralClassifierStruct
+from text_to_class.general.general_factory import SingleChoice, MultiChoice, BinaryList, Combination, Wrapper
 
 classifier_description = GeneralClassifierStruct([3, 8, 5, 5, 5], 11)
 

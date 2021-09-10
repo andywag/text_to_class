@@ -1,8 +1,6 @@
-import python.chipotle.chipotle_pb2 as pb
-from python.general.general_struct import GenericEnum, GeneralClassifierStruct
-from python.general.proto_structure import ProtoStructure
-from python.general.samples_from_proto import create_random_samples
-from google.protobuf.json_format import MessageToJson, MessageToDict, Parse, ParseDict
+import text_to_class.chipotle.chipotle_pb2 as pb
+from text_to_class.general.general_struct import GeneralClassifierStruct
+from text_to_class.general.proto_structure import ProtoStructure
 
 
 class ChipotleProtoStructure(ProtoStructure):

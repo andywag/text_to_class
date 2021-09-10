@@ -4,13 +4,14 @@ from transformers import BertTokenizer, AlbertTokenizer, DistilBertTokenizerFast
 import numpy as np
 from scipy.special import softmax
 
-from python.model import BertForMultiSequenceClassification, AlbertForMultiSequenceClassification, DistilBertForMultiSequenceClassification
+from text_to_class.model import BertForMultiSequenceClassification, AlbertForMultiSequenceClassification, DistilBertForMultiSequenceClassification
 
 
 ALBERT = "albert"
 BERT = "bert"
 BERT4 = "bert4"
 DIS = "dis"
+
 
 class ClassifierTrainer:
     def __init__(self, classifier_description, ckpt=None, training_args=None, tr_batch_size=160,
@@ -54,15 +55,12 @@ class ClassifierTrainer:
             self.training_args.save_steps = steps_per_save
 
     def train(self, input_data, eval_data=None):
-
-        trainer = Trainer(model=self.model, args=self.training_args,
-                          train_dataset=input_data)
+        trainer = Trainer(model=self.model, args=self.training_args, train_dataset=input_data)
         trainer.train()
 
     def infer(self, input_data):
         self.training_args.do_train = False
-        trainer = Trainer(model=self.model, args=self.training_args,
-                          eval_dataset=input_data)
+        trainer = Trainer(model=self.model, args=self.training_args, eval_dataset=input_data)
         result = trainer.predict(input_data, input_data)
         return result
 

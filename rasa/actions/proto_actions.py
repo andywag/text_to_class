@@ -7,33 +7,24 @@
 from rasa_sdk import Action
 from rasa_sdk.executor import CollectingDispatcher
 import sys
-import json
-import traceback
-import base64
 
-sys.path.append("..")
+sys.path.append("../../python/src")
+sys.path.append("../../python/src/text_to_class")
 
-from python.general.proto_structure import ProtoInferenceEngine
-from python.chipotle.chipotle_derived import ChipotleProtoStructure
-import python.chipotle.chipotle_pb2 as pb
+from text_to_class.general.proto_structure import ProtoInferenceEngine
+from text_to_class.chipotle.chipotle_derived import ChipotleProtoStructure
+import text_to_class.chipotle.chipotle_pb2 as pb
 
-from google.protobuf.json_format import MessageToJson, MessageToDict, Parse, ParseDict
-
+from google.protobuf.json_format import MessageToJson
 
 chipotle_proto = ChipotleProtoStructure()
-proto_inference_engine = ProtoInferenceEngine(chipotle_proto, "chipotle/bert4/checkpoint-7500")
+proto_inference_engine = ProtoInferenceEngine(chipotle_proto, "../../checkpoints/chipotle/bert4/checkpoint-7500")
 dummy_response = pb.Response()
 
 def send_response(dispatcher, response):
-    #response_string = response.SerializeToString()
-    #encoded = base64.b64encode(response_string)
-    #decoded = encoded.decode('ascii')
-    #recoded = encoded.encode('ascii')
 
     print("Response", response, MessageToJson(response))
-
     dispatcher.utter_message(text="", json_message=MessageToJson(response))
-    #dispatcher.utter_message(json_message={"response": decoded})
 
 
 def send_action_response(dispatcher, action):

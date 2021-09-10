@@ -1,6 +1,5 @@
-from python.general.general_struct import GenericEnum, GeneralClassifierStruct
 import numpy as np
-from python.classifier_dataset import GeneralDataset
+from text_to_class.classifier_dataset import GeneralDataset
 import random
 
 def name_to_string(item):

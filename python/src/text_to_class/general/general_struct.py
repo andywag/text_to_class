@@ -1,10 +1,9 @@
 
-from aenum import Enum, MultiValue
+from aenum import Enum
 import numpy as np
 
-from python.classifier_description import ClassifierSpecInt, ClassifierDescription
-from python.classifier_dataset import GeneralDataset
-from transformers import BertConfig, BertTokenizer, BertTokenizerFast
+from text_to_class.classifier_description import ClassifierSpecInt, ClassifierDescription
+from text_to_class.classifier_dataset import GeneralDataset
 
 
 class GenericEnum(Enum):

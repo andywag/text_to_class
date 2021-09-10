@@ -9,13 +9,13 @@ from rasa_sdk.executor import CollectingDispatcher
 import sys
 import traceback
 
-sys.path.append("..")
+sys.path.append("../../..")
 
 from general.inference_engine import InferenceEngine
-from chipotle.chipotle_struct import classifier_description
-from chipotle.chipotle_struct import Order as ChipotleOrder
+from text_to_class.chipotle.chipotle_struct import classifier_description
+from text_to_class.chipotle.chipotle_struct import Order as ChipotleOrder
 
-from cart.cart_state import Cart, Order, Update, YesAction, NoAction
+from text_to_class.cart.cart_state import Cart, Order, Update, YesAction, NoAction
 from state_machine import TextResponse, ChoiceResponse, SharedState
 
 

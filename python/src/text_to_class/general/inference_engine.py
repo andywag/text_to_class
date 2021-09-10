@@ -1,6 +1,6 @@
 
-from python.classifier_trainer import ClassifierTrainer, BERT4
-from python.general.general_struct import create_eval_data
+from text_to_class.classifier_trainer import ClassifierTrainer, BERT4
+from text_to_class.general.general_struct import create_eval_data
 
 
 

@@ -1,8 +1,8 @@
 import random
 import numpy as np
 
-from python.general.general_struct import GenericEnum
-from python.general.general_struct import FuzzyResult
+from text_to_class.general.general_struct import GenericEnum
+from text_to_class.general.general_struct import FuzzyResult
 
 
 class BaseObject:

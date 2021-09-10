@@ -1,6 +1,6 @@
 import json
-from python.general.general_factory import MultiChoice, SingleChoice
-from python.general.general_struct import GenericEnum
+from text_to_class.general.general_factory import MultiChoice, SingleChoice
+from text_to_class.general.general_struct import GenericEnum
 import aenum
 
 def parse_file(file = 'mcs.json'):

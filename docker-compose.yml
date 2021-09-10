@@ -16,8 +16,8 @@ services:
   rasa_action:
     image: rasa_action
     build:
-      context: ./python
-      dockerfile: ./Dockerfile
+      context: .
+      dockerfile: ./rasa/actions/Dockerfile
     ports:
       - 5055:5055
     networks:
