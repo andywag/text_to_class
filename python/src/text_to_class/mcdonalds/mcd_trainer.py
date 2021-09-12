@@ -21,7 +21,7 @@ def infer():
                                   "Large Diet Coke", "Medium Dr Pepper", "Chicken Sandwich","Filet of Fish","Shamrock"])
     chipotle_trainer = ClassifierTrainer(classifier_description=classifier_description, ckpt="test_trainer/checkpoint-3300")
     p = chipotle_trainer.infer(eval_data, eval_data)
-    probs = chipotle_trainer.get_probs(p)
+    probs = chipotle_trainer.get_probabilities(p)
     infer_results = Order.from_probs_array(probs, 0)
 
     pass

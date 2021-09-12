@@ -91,8 +91,9 @@ class ClassifierSpecTags(ClassifierSpecInt):
         if data is not None and data in self.tag_mapping:
             return [self.tag_mapping[data]]
 
-# Binary Classifier Based on a set of Tags
+
 class ClassifierMultiStruct(ClassifierSpecInt):
+    """ Multi  Classifier Based on a set of Tags"""
     def __init__(self, size):
         super().__init__(binary=False)
         self.size = size
@@ -102,6 +103,7 @@ class ClassifierMultiStruct(ClassifierSpecInt):
 
 
 class ClassifierBinaryStruct(ClassifierSpecInt):
+    """ Binary Classifier Based on a set of Tags"""
     def __init__(self, size):
         super().__init__(binary=True)
         self.size = size

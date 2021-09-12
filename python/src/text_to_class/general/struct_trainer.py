@@ -21,7 +21,7 @@ def infer(classifier_description, checkpoint, data_type, model=BERT4):
     eval_data = create_random_data(data_type, 500, 16, tokenizer=trainer.tokenizer, bin_label_length=11)
 
     p = trainer.infer(eval_data, eval_data)
-    probs = trainer.get_probs(p)
+    probs = trainer.get_probabilities(p)
     infer_results = data_type.from_probs_array(probs, 0)
     d = [str(x) for x in infer_results]
     print(d)

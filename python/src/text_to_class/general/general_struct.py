@@ -42,26 +42,6 @@ class GenericEnum(Enum):
             return FuzzyResult(use_data, prob)
 
 
-class GeneralClassifierStruct(ClassifierDescription):
-    """ Classifier structure for Trainer/Inference Block
-        :param multi : List of classes per classifier
-        :param binary : Number of binary classifiers
-        :param per_token_spec : Extra per token classifier
-    """
-    def __init__(self, multi: List[int], binary: int, per_token_spec: bool = False):
-        self.multi = multi
-        self.binary = binary
-        self.per_token_spec = per_token_spec
-
-        self.specs = list()
-        for m in multi:
-            self.specs.append(ClassifierMultiStruct(m))
-        if binary > 0:
-            self.specs.append(ClassifierBinaryStruct(self.binary))
-
-    def total_dims(self):
-        return len(self.multi) + self.binary
-
 
 class FuzzyResult:
     def __init__(self, result, probability):
